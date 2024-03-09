@@ -14,7 +14,7 @@ header {
 }
 
 #head {
-  background-image: url("https://s2.loli.net/2024/03/09/Kwlsqck32TyuNGL.png");
+  background-image: linear-gradient(to top, #537895 0%, #09203f 100%);
 }
 
 #nav .item {
