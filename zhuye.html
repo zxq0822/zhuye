@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qing搜索</title>
+    <link rel="icon" href="wangzhantubiao.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36D399',
+                        neutral: '#F8FAFC',
+                        dark: '#1E293B',
+                        sun: '#FFD700',
+                        moon: '#9CA3AF'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+
+            .search-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .engine-active {
+                @apply bg-primary text-white border-primary;
+            }
+
+            .dropdown-content {
+                transform: scaleY(0);
+                transform-origin: top;
+                transition: transform 0.2s ease;
+            }
+
+            .dropdown-active .dropdown-content {
+                transform: scaleY(1);
+            }
+
+            .engine-icon {
+                width: 18px;
+                height: 18px;
+                display: inline-block;
+                background-size: contain;
+                background-repeat: no-repeat;
+                margin-right: 6px;
+            }
+
+            .icon-baidu {
+                background-image: url('faviconbaidu.ico');
+            }
+
+            .icon-bing {
+                background-image: url('faviconbing.ico');
+            }
+
+            .icon-google {
+                background-image: url('favicongoogle.ico');
+            }
+
+            .icon-mitata {
+                background-image: url('faviconmeta.ico');
+            }
+
+            /* 黑暗模式样式 */
+            .dark-mode {
+                background-color: #1E293B;
+                color: white;
+            }
+
+            .dark-mode .bg-white {
+                background-color: #334155;
+                color: white;
+            }
+
+            .dark-mode .bg-white\/80 {
+                background-color: #334155;
+                color: white;
+            }
+
+            .dark-mode .bg-white\/95 {
+                background-color: #334155;
+                color: white;
+            }
+
+            .dark-mode .text-gray-800 {
+                color: white;
+            }
+
+            .dark-mode .text-gray-400 {
+                color: #94a3b8;
+            }
+
+            .dark-mode .border-gray-200 {
+                border-color: #475569;
+            }
+
+            .dark-mode .border-gray-100 {
+                border-color: #475569;
+            }
+
+            .dark-mode .hover:bg-gray-50 {
+                --tw-bg-opacity: 1;
+                background-color: rgb(51 65 85 / var(--tw-bg-opacity));
+            }
+            
+            /* 优化后的黑暗模式开关样式 */
+            .theme-toggle {
+                position: relative;
+                display: inline-block;
+                width: 64px;
+                height: 32px;
+            }
+            
+            .theme-toggle input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .theme-toggle-slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #e2e8f0;
+                transition: .4s;
+                border-radius: 34px;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            }
+            
+            .theme-toggle input:checked + .theme-toggle-slider {
+                background-color: #1e293b;
+            }
+            
+            .theme-toggle-slider:before {
+                position: absolute;
+                content: "";
+                height: 24px;
+                width: 24px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            .theme-toggle input:checked + .theme-toggle-slider:before {
+                transform: translateX(32px);
+            }
+            
+            .theme-icon {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 16px;
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+            
+            .theme-icon-sun {
+                left: 8px;
+                color: #94a3b8;
+            }
+            
+            .theme-icon-moon {
+                right: 8px;
+                color: #94a3b8;
+            }
+            
+            .theme-toggle input:not(:checked) ~ .theme-icon-sun {
+                color: #FFD700;
+                transform: translateY(-50%) scale(1.2);
+            }
+            
+            .theme-toggle input:checked ~ .theme-icon-moon {
+                color: #ffffff;
+                transform: translateY(-50%) scale(1.2);
+            }
+            
+            /* 为太阳添加光芒效果 */
+            .theme-icon-sun::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 24px;
+                height: 24px;
+                background: rgba(255, 215, 0, 0.3);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .theme-toggle input:not(:checked) ~ .theme-icon-sun::after {
+                opacity: 1;
+            }
+            
+            /* 背景图样式 */
+            .bg-image {
+                background-image: url('beijingtu.png');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+                transition: background-image 0.5s ease;
+            }
+            
+            .bg-image-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(30, 41, 59, 0.2);
+                transition: background-color 0.5s ease;
+            }
+            
+            /* 完全透明的搜索框 - 移除磨砂玻璃效果 */
+            .transparent-search {
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .dark-mode .transparent-search {
+                background-color: rgba(30, 41, 59, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            /* 搜索建议列表样式 - 移除磨砂玻璃效果 */
+            .transparent-suggestions {
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .dark-mode .transparent-suggestions {
+                background-color: rgba(30, 41, 59, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            /* 鼠标悬停效果增强 */
+            .suggestion-item {
+                transition: all 0.2s ease;
+            }
+            
+            .suggestion-item:hover {
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+            
+            .dark-mode .suggestion-item:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+            
+            /* 标题样式 */
+            .search-title {
+                font-size: clamp(2rem, 5vw, 3.5rem);
+                font-weight: 800;
+                letter-spacing: -0.05em;
+                margin-bottom: 1.5rem;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+            
+            .search-title:hover {
+                transform: translateY(-2px);
+            }
+            
+            /* 移动端适配 */
+            @media (max-width: 640px) {
+                .search-title {
+                    font-size: 2.5rem;
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter min-h-screen flex flex-col items-center justify-start px-4 py-8 dark-mode">
+    <!-- 背景图容器 -->
+    <div class="bg-image fixed inset-0 z-0"></div>
+    <!-- 背景图遮罩层 -->
+    <div class="bg-image-overlay z-10"></div>
+
+    <!-- 进一步优化后的黑暗模式开关 -->
+    <div class="fixed top-4 right-4 z-30">
+        <label class="theme-toggle">
+            <input type="checkbox" id="dark-mode-toggle" class="hidden" checked>
+            <span class="theme-toggle-slider"></span>
+            <i class="fa fa-sun-o theme-icon theme-icon-sun"></i>
+            <i class="fa fa-moon-o theme-icon theme-icon-moon"></i>
+        </label>
+    </div>
+
+    <!-- 搜索区域 -->
+    <div class="w-full max-w-4xl z-20 mt-24 md:mt-32">
+        <!-- 搜索标题 -->
+        <h1 class="search-title text-center">
+            <span class="text-white">Qing</span>
+            <span class="text-primary">搜索</span>
+        </h1>
+        
+        <!-- 搜索框 -->
+        <div class="relative group">
+            <form id="search-form" class="w-full">
+                <div
+                    class="flex items-center rounded-full transparent-search p-1 search-shadow transition-all duration-300 group-hover:border-primary/50 group-focus-within:border-primary/70">
+                    <!-- 搜索引擎下拉菜单 -->
+                    <div id="engine-dropdown" class="dropdown relative mr-2">
+                        <button id="current-engine"
+                            class="engine-btn flex items-center px-3 py-1.5 text-sm font-medium transition-all duration-200 whitespace-nowrap focus:outline-none rounded-full bg-white/10 hover:bg-white/20 dark:hover:bg-white/5">
+                            <span class="engine-icon icon-baidu"></span>
+                            <i class="fa fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div id="engine-options"
+                            class="dropdown-content absolute top-full left-0 mt-1 transparent-suggestions rounded-xl shadow-lg overflow-hidden w-28 z-20">
+                            <button data-engine="baidu"
+                                class="engine-option w-full text-left px-3 py-2 suggestion-item flex items-center">
+                                <span class="engine-icon icon-baidu"></span> 百度
+                            </button>
+                            <button data-engine="bing"
+                                class="engine-option w-full text-left px-3 py-2 suggestion-item flex items-center">
+                                <span class="engine-icon icon-bing"></span> 必应
+                            </button>
+                            <button data-engine="google"
+                                class="engine-option w-full text-left px-3 py-2 suggestion-item flex items-center">
+                                <span class="engine-icon icon-google"></span> 谷歌
+                            </button>
+                            <button data-engine="mitata"
+                                class="engine-option w-full text-left px-3 py-2 suggestion-item flex items-center">
+                                <span class="engine-icon icon-mitata"></span> 秘塔
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 分隔线 -->
+                    <div class="h-6 w-px bg-white/20 dark:bg-white/10"></div>
+
+                    <div class="flex items-center px-3">
+                        <i id="search-icon" class="fa fa-search text-gray-400 text-lg"></i>
+                    </div>
+                    <input type="text" id="search-input" placeholder="你想搜啥..."
+                        class="flex-1 w-full py-2 px-2 text-gray-800 dark:text-white bg-transparent outline-none text-lg"
+                        autocomplete="off">
+                    <button type="submit"
+                        class="bg-primary/90 text-white px-5 py-1.5 rounded-full font-medium transition-all duration-200 hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa fa-search text-lg"></i>
+                    </button>
+                </div>
+            </form>
+
+            <!-- 搜索建议 -->
+            <div id="suggestions"
+                class="hidden absolute top-full left-0 right-0 mt-2 transparent-suggestions rounded-xl shadow-lg overflow-hidden z-10">
+                <ul id="suggestions-list" class="divide-y divide-white/10 dark:divide-white/5"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 搜索引擎配置
+        const searchEngines = {
+            'baidu': {
+                url: 'https://www.baidu.com/s',
+                param: 'wd',
+                iconClass: 'icon-baidu',
+                color: '#2319DC',
+                name: '百度'
+            },
+            'bing': {
+                url: 'https://cn.bing.com/search', // 使用中国版必应
+                param: 'q',
+                iconClass: 'icon-bing',
+                color: '#008373',
+                name: '必应'
+            },
+            'google': {
+                url: 'https://www.google.com/search',
+                param: 'q',
+                iconClass: 'icon-google',
+                color: '#4285F4',
+                name: '谷歌'
+            },
+            'mitata': {
+                url: 'https://www.mitata.com/search',
+                param: 'q',
+                iconClass: 'icon-mitata',
+                color: '#165DFF',
+                name: '秘塔'
+            }
+        };
+
+        // 当前选中的搜索引擎
+        let currentEngine = 'baidu';
+
+        // DOM元素
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        const searchIcon = document.getElementById('search-icon');
+        const suggestions = document.getElementById('suggestions');
+        const suggestionsList = document.getElementById('suggestions-list');
+        const engineDropdown = document.getElementById('engine-dropdown');
+        const currentEngineBtn = document.getElementById('current-engine');
+        const engineOptions = document.getElementById('engine-options');
+        const engineOptionBtns = document.querySelectorAll('.engine-option');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+
+        // 初始化搜索引擎下拉菜单
+        engineOptionBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const engine = btn.getAttribute('data-engine');
+                setCurrentEngine(engine);
+                engineDropdown.classList.remove('dropdown-active');
+            });
+        });
+
+        // 点击下拉菜单按钮切换显示状态
+        currentEngineBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            engineDropdown.classList.toggle('dropdown-active');
+        });
+
+        // 点击其他区域关闭下拉菜单
+        document.addEventListener('click', () => {
+            engineDropdown.classList.remove('dropdown-active');
+        });
+
+        // 设置当前搜索引擎
+        function setCurrentEngine(engine) {
+            currentEngine = engine;
+            const engineData = searchEngines[engine];
+
+            // 更新下拉菜单按钮 - 只显示图标
+            currentEngineBtn.innerHTML = `
+                <span class="engine-icon ${engineData.iconClass}"></span>
+                <i class="fa fa-chevron-down ml-1 text-xs"></i>
+            `;
+
+            // 更新搜索图标
+            updateSearchIcon();
+        }
+
+        // 更新搜索图标颜色
+        function updateSearchIcon() {
+            const engine = searchEngines[currentEngine];
+            searchIcon.className = `fa ${engine.icon || 'fa-search'} text-gray-400 text-lg`;
+        }
+
+        // 处理搜索表单提交
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const query = searchInput.value.trim();
+            if (query) {
+                const engine = searchEngines[currentEngine];
+                // 为必应添加语言参数，确保使用中文界面
+                let searchUrl = engine.url;
+                if (engine === searchEngines.bing) {
+                    searchUrl += '?setmkt=zh-CN&setlang=zh-CN';
+                    searchUrl += `&${engine.param}=${encodeURIComponent(query)}`;
+                } else {
+                    searchUrl += `?${engine.param}=${encodeURIComponent(query)}`;
+                }
+                window.location.href = searchUrl;
+            }
+        });
+
+        // 搜索建议功能
+        searchInput.addEventListener('input', debounce(async function () {
+            const query = this.value.trim();
+            if (!query) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+
+            try {
+                // 根据当前搜索引擎获取建议
+                let suggestionsData = [];
+                if (currentEngine === 'baidu') {
+                    const response = await fetch(`https://suggestion.baidu.com/su?wd=${encodeURIComponent(query)}&cb=JSON_CALLBACK`, {
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Referer': 'https://www.baidu.com'
+                        }
+                    });
+                    const text = await response.text();
+                    // 解析JSONP格式
+                    const jsonpRegex = /JSON_CALLBACK\((.*)\)/;
+                    const matches = text.match(jsonpRegex);
+                    if (matches && matches[1]) {
+                        const data = JSON.parse(matches[1]);
+                        suggestionsData = data.s || [];
+                    }
+                } else if (currentEngine === 'bing') {
+                    const response = await fetch(`https://api.bing.com/osjson.aspx?query=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    suggestionsData = data[1] || [];
+                } else if (currentEngine === 'google') {
+                    const response = await fetch(`https://www.google.com/complete/search?client=chrome&q=${encodeURIComponent(query)}`);
+                    const text = await response.text();
+                    try {
+                        const data = JSON.parse(text);
+                        suggestionsData = data[1] || [];
+                    } catch (e) {
+                        console.error('Failed to parse Google suggestions', e);
+                    }
+                }
+
+                // 显示建议
+                displaySuggestions(suggestionsData);
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                suggestions.classList.add('hidden');
+            }
+        }, 300));
+
+        // 点击其他区域关闭建议
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !suggestions.contains(e.target)) {
+                suggestions.classList.add('hidden');
+            }
+        });
+
+        // 显示搜索建议
+        function displaySuggestions(suggestionsData) {
+            if (!suggestionsData.length) {
+                suggestions.classList.add('hidden');
+                return;
+            }
+
+            suggestionsList.innerHTML = '';
+            suggestionsData.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.className = 'px-4 py-3 suggestion-item cursor-pointer';
+                li.textContent = suggestion;
+                li.addEventListener('click', () => {
+                    searchInput.value = suggestion;
+                    suggestions.classList.add('hidden');
+                    searchForm.dispatchEvent(new Event('submit'));
+                });
+                suggestionsList.appendChild(li);
+            });
+
+            suggestions.classList.remove('hidden');
+        }
+
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function () {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        // 初始化
+        updateSearchIcon();
+
+        // 检查用户偏好的颜色模式
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            darkModeToggle.checked = true;
+            body.classList.add('dark-mode');
+        }
+
+        // 黑暗模式切换逻辑
+        darkModeToggle.addEventListener('change', function () {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                document.querySelector('.bg-image-overlay').style.backgroundColor = 'rgba(30, 41, 59, 0.2)';
+            } else {
+                body.classList.remove('dark-mode');
+                document.querySelector('.bg-image-overlay').style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+            }
+        });
+    </script>
+</body>
+
+</html>
