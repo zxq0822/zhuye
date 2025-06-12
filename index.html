@@ -289,6 +289,118 @@
                     margin-bottom: 1rem;
                 }
             }
+            
+            /* 天气组件样式 */
+            .weather-widget {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 30;
+                padding: 10px 15px;
+                border-radius: 12px;
+                backdrop-filter: blur(8px);
+                transition: all 0.3s ease;
+                opacity: 0.9;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+            
+            .weather-widget:hover {
+                opacity: 1;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            }
+            
+            .weather-icon {
+                font-size: 28px;
+                min-width: 32px;
+                text-align: center;
+            }
+            
+            .weather-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+            
+            .weather-location {
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .weather-temp {
+                font-size: 18px;
+                font-weight: 600;
+            }
+            
+            .weather-desc {
+                font-size: 12px;
+                text-transform: capitalize;
+            }
+            
+            /* 黑暗模式下的天气组件 */
+            .dark-mode .weather-widget {
+                background-color: rgba(30, 41, 59, 0.8);
+                color: white;
+            }
+            
+            /* 亮色模式下的天气组件 */
+            .weather-widget {
+                background-color: rgba(255, 255, 255, 0.8);
+                color: #1E293B;
+            }
+            
+            /* 加载动画 */
+            .weather-loading {
+                width: 20px;
+                height: 20px;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                border-top-color: #165DFF;
+                animation: spin 1s linear infinite;
+            }
+            
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            
+            /* 天气错误提示 */
+            .weather-error {
+                font-size: 14px;
+                color: #ff4d4f;
+                text-align: center;
+            }
+            
+            /* 移动端适配 */
+            @media (max-width: 640px) {
+                .weather-widget {
+                    top: 12px;
+                    left: 12px;
+                    padding: 8px 12px;
+                }
+                
+                .weather-icon {
+                    font-size: 24px;
+                    min-width: 28px;
+                }
+                
+                .weather-location {
+                    font-size: 12px;
+                }
+                
+                .weather-temp {
+                    font-size: 16px;
+                }
+                
+                .weather-desc {
+                    font-size: 10px;
+                }
+            }
         }
     </style>
 </head>
@@ -307,6 +419,18 @@
             <i class="fa fa-sun-o theme-icon theme-icon-sun"></i>
             <i class="fa fa-moon-o theme-icon theme-icon-moon"></i>
         </label>
+    </div>
+
+    <!-- 当地天气组件 -->
+    <div id="weather-widget" class="weather-widget opacity-0" style="animation: fadeIn 0.5s ease forwards 0.5s;">
+        <div class="weather-icon">
+            <i class="fa fa-spinner weather-loading"></i>
+        </div>
+        <div class="weather-details">
+            <div class="weather-location">正在定位...</div>
+            <div class="weather-temp">--°</div>
+            <div class="weather-desc">加载中...</div>
+        </div>
     </div>
 
     <!-- 搜索区域 -->
@@ -422,6 +546,11 @@
         const engineOptionBtns = document.querySelectorAll('.engine-option');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const body = document.body;
+        const weatherWidget = document.getElementById('weather-widget');
+        const weatherIcon = weatherWidget.querySelector('.weather-icon');
+        const weatherLocation = weatherWidget.querySelector('.weather-location');
+        const weatherTemp = weatherWidget.querySelector('.weather-temp');
+        const weatherDesc = weatherWidget.querySelector('.weather-desc');
 
         // 初始化搜索引擎下拉菜单
         engineOptionBtns.forEach(btn => {
@@ -592,6 +721,236 @@
                 document.querySelector('.bg-image-overlay').style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
             }
         });
+
+        // 天气相关功能
+        async function fetchWeatherData(lat, lon) {
+            try {
+                // 使用和风天气 API 获取天气数据
+                const apiKey = '08f92e23eaef4971b68261708607b897'; // 请替换为你的和风天气API密钥
+                const locationKey = await fetchLocationKey(lat, lon, apiKey);
+                
+                if (!locationKey) {
+                    throw new Error('无法获取位置ID');
+                }
+                
+                // 获取实时天气
+                const weatherResponse = await fetch(
+                    `https://devapi.qweather.com/v7/weather/now?location=${locationKey}&key=${apiKey}`
+                );
+                
+                // 获取城市信息
+                const cityResponse = await fetch(
+                    `https://geoapi.qweather.com/v2/city/lookup?location=${locationKey}&key=${apiKey}`
+                );
+                
+                if (!weatherResponse.ok || !cityResponse.ok) {
+                    throw new Error('无法获取天气数据');
+                }
+                
+                const weatherData = await weatherResponse.json();
+                const cityData = await cityResponse.json();
+                
+                return {
+                    weather: weatherData,
+                    city: cityData
+                };
+            } catch (error) {
+                console.error('获取天气数据失败:', error);
+                return null;
+            }
+        }
+        
+        // 获取位置ID
+        async function fetchLocationKey(lat, lon, apiKey) {
+            try {
+                const response = await fetch(
+                    `https://geoapi.qweather.com/v2/city/lookup?location=${lon},${lat}&key=${apiKey}`
+                );
+                
+                if (!response.ok) {
+                    throw new Error('无法获取位置ID');
+                }
+                
+                const data = await response.json();
+                if (data.code === '200' && data.location && data.location.length > 0) {
+                    return data.location[0].id;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('获取位置ID失败:', error);
+                return null;
+            }
+        }
+
+        // 根据和风天气代码获取对应的图标
+        function getWeatherIcon(weatherCode) {
+            // 和风天气代码到Font Awesome图标的映射
+            const iconMap = {
+                // 晴
+                '100': 'fa-sun-o',
+                // 多云
+                '101': 'fa-cloud-sun-o',
+                '102': 'fa-cloud-sun-o',
+                '103': 'fa-cloud',
+                '104': 'fa-cloud',
+                // 雨
+                '300': 'fa-cloud-rain',
+                '301': 'fa-cloud-rain',
+                '302': 'fa-tint',
+                '303': 'fa-tint',
+                '304': 'fa-tint',
+                '305': 'fa-cloud-rain',
+                '306': 'fa-cloud-rain',
+                '307': 'fa-cloud-rain',
+                '308': 'fa-cloud-rain',
+                '309': 'fa-cloud-rain',
+                '310': 'fa-cloud-rain',
+                '311': 'fa-cloud-rain',
+                '312': 'fa-cloud-rain',
+                '313': 'fa-cloud-rain',
+                '314': 'fa-cloud-rain',
+                '315': 'fa-cloud-rain',
+                '316': 'fa-cloud-rain',
+                '317': 'fa-cloud-rain',
+                '318': 'fa-cloud-rain',
+                '399': 'fa-cloud-rain',
+                // 雪
+                '400': 'fa-snowflake-o',
+                '401': 'fa-snowflake-o',
+                '402': 'fa-snowflake-o',
+                '403': 'fa-snowflake-o',
+                '404': 'fa-snowflake-o',
+                '405': 'fa-snowflake-o',
+                '406': 'fa-snowflake-o',
+                '407': 'fa-snowflake-o',
+                '499': 'fa-snowflake-o',
+                // 雾
+                '500': 'fa-smog',
+                '501': 'fa-smog',
+                '502': 'fa-smog',
+                '503': 'fa-smog',
+                '504': 'fa-smog',
+                '507': 'fa-smog',
+                '508': 'fa-smog',
+                '509': 'fa-smog',
+                '510': 'fa-smog',
+                '511': 'fa-smog',
+                '512': 'fa-smog',
+                '513': 'fa-smog',
+                '514': 'fa-smog',
+                '515': 'fa-smog',
+                '599': 'fa-smog',
+                // 雷暴
+                '310': 'fa-bolt',
+                '311': 'fa-bolt',
+                '312': 'fa-bolt',
+                '313': 'fa-bolt',
+                // 默认图标
+                default: 'fa-question-circle-o'
+            };
+            
+            return iconMap[weatherCode] || iconMap.default;
+        }
+
+        // 更新天气显示
+        function updateWeatherDisplay(weatherData) {
+            if (!weatherData) {
+                weatherIcon.innerHTML = '<i class="fa fa-exclamation-triangle weather-error"></i>';
+                weatherLocation.textContent = '定位失败';
+                weatherTemp.textContent = '--°';
+                weatherDesc.textContent = '无法获取天气';
+                return;
+            }
+            
+            const { weather, city } = weatherData;
+            
+            if (weather.code !== '200' || !weather.now || !city.location || city.location.length === 0) {
+                weatherIcon.innerHTML = '<i class="fa fa-exclamation-triangle weather-error"></i>';
+                weatherLocation.textContent = '定位失败';
+                weatherTemp.textContent = '--°';
+                weatherDesc.textContent = '无法获取天气';
+                return;
+            }
+            
+            const { now } = weather;
+            const location = city.location[0];
+            const temp = Math.round(parseFloat(now.temp));
+            const weatherCode = now.icon;
+            const weatherIconClass = getWeatherIcon(weatherCode);
+            const weatherText = now.text;
+            
+            // 更新天气信息
+            weatherIcon.innerHTML = `<i class="fa ${weatherIconClass}"></i>`;
+            weatherLocation.textContent = location.name;
+            weatherTemp.textContent = `${temp}°`;
+            weatherDesc.textContent = weatherText;
+            
+            // 添加颜色效果
+            if (temp > 28) {
+                weatherTemp.classList.add('text-red-500');
+            } else if (temp < 10) {
+                weatherTemp.classList.add('text-blue-400');
+            } else {
+                weatherTemp.classList.remove('text-red-500', 'text-blue-400');
+            }
+        }
+
+        // 获取位置信息
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const weatherData = await fetchWeatherData(latitude, longitude);
+                        updateWeatherDisplay(weatherData);
+                    },
+                    (error) => {
+                        console.error('获取位置失败:', error);
+                        // 如果用户拒绝位置访问或其他错误，使用默认位置（北京）
+                        fetchDefaultWeather();
+                    }
+                );
+            } else {
+                console.error('浏览器不支持地理位置');
+                // 浏览器不支持地理位置，使用默认位置
+                fetchDefaultWeather();
+            }
+        }
+
+        // 获取默认位置（北京）的天气
+        async function fetchDefaultWeather() {
+            // 北京的经纬度
+            const lat = 39.9042;
+            const lon = 116.4074;
+            const weatherData = await fetchWeatherData(lat, lon);
+            updateWeatherDisplay(weatherData);
+        }
+
+        // 初始化天气组件
+        function initWeatherWidget() {
+            // 初始加载动画
+            weatherIcon.innerHTML = '<i class="fa fa-spinner weather-loading"></i>';
+            weatherLocation.textContent = '正在定位...';
+            weatherTemp.textContent = '--°';
+            weatherDesc.textContent = '加载中...';
+            
+            // 获取天气数据
+            getLocation();
+            
+            // 每小时刷新一次天气数据
+            setInterval(getLocation, 3600000);
+        }
+
+        // 点击天气组件刷新
+        weatherWidget.addEventListener('click', () => {
+            weatherIcon.innerHTML = '<i class="fa fa-spinner weather-loading"></i>';
+            weatherDesc.textContent = '刷新中...';
+            getLocation();
+        });
+
+        // 页面加载完成后初始化天气组件
+        window.addEventListener('load', initWeatherWidget);
     </script>
 </body>
 
