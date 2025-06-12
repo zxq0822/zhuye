@@ -117,7 +117,7 @@
                 --tw-bg-opacity: 1;
                 background-color: rgb(51 65 85 / var(--tw-bg-opacity));
             }
-            
+
             /* 优化后的黑暗模式开关样式 */
             .theme-toggle {
                 position: relative;
@@ -125,13 +125,13 @@
                 width: 64px;
                 height: 32px;
             }
-            
+
             .theme-toggle input {
                 opacity: 0;
                 width: 0;
                 height: 0;
             }
-            
+
             .theme-toggle-slider {
                 position: absolute;
                 cursor: pointer;
@@ -142,13 +142,13 @@
                 background-color: #e2e8f0;
                 transition: .4s;
                 border-radius: 34px;
-                box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
             }
-            
+
             .theme-toggle input:checked + .theme-toggle-slider {
                 background-color: #1e293b;
             }
-            
+
             .theme-toggle-slider:before {
                 position: absolute;
                 content: "";
@@ -159,13 +159,13 @@
                 background-color: white;
                 transition: .4s;
                 border-radius: 50%;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             }
-            
+
             .theme-toggle input:checked + .theme-toggle-slider:before {
                 transform: translateX(32px);
             }
-            
+
             .theme-icon {
                 position: absolute;
                 top: 50%;
@@ -174,27 +174,27 @@
                 transition: all 0.3s ease;
                 z-index: 10;
             }
-            
+
             .theme-icon-sun {
                 left: 8px;
                 color: #94a3b8;
             }
-            
+
             .theme-icon-moon {
                 right: 8px;
                 color: #94a3b8;
             }
-            
+
             .theme-toggle input:not(:checked) ~ .theme-icon-sun {
                 color: #FFD700;
                 transform: translateY(-50%) scale(1.2);
             }
-            
+
             .theme-toggle input:checked ~ .theme-icon-moon {
                 color: #ffffff;
                 transform: translateY(-50%) scale(1.2);
             }
-            
+
             /* 为太阳添加光芒效果 */
             .theme-icon-sun::after {
                 content: "";
@@ -209,20 +209,19 @@
                 opacity: 0;
                 transition: opacity 0.3s ease;
             }
-            
+
             .theme-toggle input:not(:checked) ~ .theme-icon-sun::after {
                 opacity: 1;
             }
-            
-            /* 背景图样式 */
+
+            /* 背景图样式 - 动态设置 */
             .bg-image {
-                background-image: url('beijingtu.png');
                 background-size: cover;
                 background-position: center;
                 background-attachment: fixed;
                 transition: background-image 0.5s ease;
             }
-            
+
             .bg-image-overlay {
                 position: fixed;
                 top: 0;
@@ -232,42 +231,42 @@
                 background-color: rgba(30, 41, 59, 0.2);
                 transition: background-color 0.5s ease;
             }
-            
+
             /* 完全透明的搜索框 - 移除磨砂玻璃效果 */
             .transparent-search {
                 background-color: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
             }
-            
+
             .dark-mode .transparent-search {
                 background-color: rgba(30, 41, 59, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            
+
             /* 搜索建议列表样式 - 移除磨砂玻璃效果 */
             .transparent-suggestions {
                 background-color: rgba(255, 255, 255, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.2);
             }
-            
+
             .dark-mode .transparent-suggestions {
                 background-color: rgba(30, 41, 59, 0.1);
                 border: 1px solid rgba(255, 255, 255, 0.1);
             }
-            
+
             /* 鼠标悬停效果增强 */
             .suggestion-item {
                 transition: all 0.2s ease;
             }
-            
+
             .suggestion-item:hover {
                 background-color: rgba(255, 255, 255, 0.15);
             }
-            
+
             .dark-mode .suggestion-item:hover {
                 background-color: rgba(255, 255, 255, 0.05);
             }
-            
+
             /* 标题样式 */
             .search-title {
                 font-size: clamp(2rem, 5vw, 3.5rem);
@@ -277,16 +276,295 @@
                 text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
             }
-            
+
             .search-title:hover {
                 transform: translateY(-2px);
             }
-            
+
             /* 移动端适配 */
             @media (max-width: 640px) {
                 .search-title {
                     font-size: 2.5rem;
                     margin-bottom: 1rem;
+                }
+            }
+
+            /* 类似Edge的圆形书签样式 */
+            .bookmark-circle {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+
+            .bookmark-icon-container {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                transition: all 0.2s ease;
+                position: relative;
+            }
+
+            .dark-mode .bookmark-icon-container {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .bookmark-circle:hover .bookmark-icon-container {
+                transform: translateY(-4px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .bookmark-icon {
+                width: 28px;
+                height: 28px;
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+
+            /* 首字母显示样式 */
+            .bookmark-letter {
+                font-size: 16px;
+                line-height: 1;
+            }
+
+            .bookmark-title {
+                margin-top: 8px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+                padding: 0 4px;
+            }
+
+            .bookmark-actions {
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+
+            .bookmark-circle:hover .bookmark-actions {
+                opacity: 1;
+            }
+
+            .bookmark-actions button {
+                background-color: rgba(0, 0, 0, 0.5);
+                color: white;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                transition: background-color 0.2s ease;
+                border: none;
+            }
+
+            .bookmark-actions button:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+
+            /* 添加书签按钮样式 */
+            .add-bookmark-circle {
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px dashed rgba(255, 255, 255, 0.2);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+
+            .add-bookmark-circle:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+
+            .add-icon {
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 添加书签表单样式 */
+            .add-bookmark-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 50;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+
+            .add-bookmark-modal.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .modal-content {
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 16px;
+                padding: 24px;
+                width: 100%;
+                max-width: 400px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            }
+
+            .dark-mode .modal-content {
+                background-color: rgba(30, 41, 59, 0.9);
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .modal-title {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+
+            .close-modal {
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+                font-size: 1.5rem;
+                opacity: 0.7;
+                transition: opacity 0.2s ease;
+            }
+
+            .close-modal:hover {
+                opacity: 1;
+            }
+
+            .modal-form {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
+                font-weight: 500;
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            .form-input {
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                padding: 10px 12px;
+                color: white;
+                font-size: 1rem;
+                transition: all 0.2s ease;
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: rgba(22, 93, 255, 0.8);
+                box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.2);
+            }
+
+            .dark-mode .form-input {
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 8px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                border-radius: 8px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .btn-cancel {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+
+            .btn-cancel:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .btn-primary {
+                background-color: rgba(22, 93, 255, 0.9);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: rgba(22, 93, 255, 1);
+            }
+
+            /* 加载指示器样式 */
+            .loading-indicator {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 40px;
+                border: 4px solid rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                border-top-color: #165DFF;
+                animation: spin 1s linear infinite;
+                z-index: 10;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg);
                 }
             }
         }
@@ -295,14 +573,14 @@
 
 <body class="font-inter min-h-screen flex flex-col items-center justify-start px-4 py-8 dark-mode">
     <!-- 背景图容器 -->
-    <div class="bg-image fixed inset-0 z-0"></div>
+    <div id="bg-image" class="bg-image fixed inset-0 z-0"></div>
     <!-- 背景图遮罩层 -->
     <div class="bg-image-overlay z-10"></div>
 
     <!-- 进一步优化后的黑暗模式开关 -->
     <div class="fixed top-4 right-4 z-30">
         <label class="theme-toggle">
-            <input type="checkbox" id="dark-mode-toggle" class="hidden" checked>
+            <input type="checkbox" id="dark-mode-toggle" class="hidden">
             <span class="theme-toggle-slider"></span>
             <i class="fa fa-sun-o theme-icon theme-icon-sun"></i>
             <i class="fa fa-moon-o theme-icon theme-icon-moon"></i>
@@ -316,7 +594,7 @@
             <span class="text-white">Qing</span>
             <span class="text-primary">搜索</span>
         </h1>
-        
+
         <!-- 搜索框 -->
         <div class="relative group">
             <form id="search-form" class="w-full">
@@ -330,21 +608,21 @@
                             <i class="fa fa-chevron-down ml-1 text-xs"></i>
                         </button>
                         <div id="engine-options"
-                            class="dropdown-content absolute top-full left-0 mt-1 transparent-suggestions rounded-xl shadow-lg overflow-hidden w-24 z-20"> <!-- 修改宽度为 w-24 (6rem/96px) -->
+                            class="dropdown-content absolute top-full left-0 mt-1 transparent-suggestions rounded-xl shadow-lg overflow-hidden w-24 z-20">
                             <button data-engine="baidu"
-                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center"> <!-- 减少内边距为 px-2 -->
+                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center">
                                 <span class="engine-icon icon-baidu"></span> 百度
                             </button>
                             <button data-engine="bing"
-                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center"> <!-- 减少内边距为 px-2 -->
+                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center">
                                 <span class="engine-icon icon-bing"></span> 必应
                             </button>
                             <button data-engine="google"
-                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center"> <!-- 减少内边距为 px-2 -->
+                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center">
                                 <span class="engine-icon icon-google"></span> 谷歌
                             </button>
                             <button data-engine="mitata"
-                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center"> <!-- 减少内边距为 px-2 -->
+                                class="engine-option w-full text-left px-2 py-2 suggestion-item flex items-center">
                                 <span class="engine-icon icon-mitata"></span> 秘塔
                             </button>
                         </div>
@@ -371,10 +649,58 @@
                 class="hidden absolute top-full left-0 right-0 mt-2 transparent-suggestions rounded-xl shadow-lg overflow-hidden z-10">
                 <ul id="suggestions-list" class="divide-y divide-white/10 dark:divide-white/5"></ul>
             </div>
+
+            <!-- 书签区域 - 类似Edge的设计 -->
+            <div id="bookmark-area" class="mt-8">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-medium text-white">快速访问</h2>
+                    <button id="add-bookmark-btn" class="text-primary hover:underline text-sm">添加网站</button>
+                </div>
+                <div id="bookmark-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加书签模态框 -->
+    <div id="add-bookmark-modal" class="add-bookmark-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加书签</h3>
+                <button id="close-modal" class="close-modal">&times;</button>
+            </div>
+            <form id="bookmark-form" class="modal-form">
+                <div class="form-group">
+                    <label for="bookmark-name" class="form-label">网站名称</label>
+                    <input type="text" id="bookmark-name" class="form-input" placeholder="例如：Baidu" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookmark-url" class="form-label">网站URL</label>
+                    <input type="url" id="bookmark-url" class="form-input" placeholder="例如：https://www.baidu.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookmark-icon" class="form-label">网站图标URL（可选）</label>
+                    <input type="url" id="bookmark-icon" class="form-input" placeholder="例如：https://www.baidu.com/favicon.ico">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-add-bookmark" class="btn btn-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
+        // 防抖函数定义
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
         // 搜索引擎配置
         const searchEngines = {
             'baidu': {
@@ -385,7 +711,7 @@
                 name: '百度'
             },
             'bing': {
-                url: 'https://cn.bing.com/search', // 使用中国版必应
+                url: 'https://cn.bing.com/search',
                 param: 'q',
                 iconClass: 'icon-bing',
                 color: '#008373',
@@ -422,6 +748,46 @@
         const engineOptionBtns = document.querySelectorAll('.engine-option');
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const body = document.body;
+        const bookmarkGrid = document.getElementById('bookmark-grid');
+        const addBookmarkBtn = document.getElementById('add-bookmark-btn');
+        const bgImage = document.getElementById('bg-image');
+        
+        // 模态框相关元素
+        const addBookmarkModal = document.getElementById('add-bookmark-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelAddBookmarkBtn = document.getElementById('cancel-add-bookmark');
+        const bookmarkForm = document.getElementById('bookmark-form');
+        const bookmarkNameInput = document.getElementById('bookmark-name');
+        const bookmarkUrlInput = document.getElementById('bookmark-url');
+        const bookmarkIconInput = document.getElementById('bookmark-icon');
+
+        // 从本地存储中获取书签
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [
+            {
+                id: '1',
+                name: 'GitHub',
+                url: 'https://github.com',
+                icon: 'https://github.com/favicon.ico'
+            },
+            {
+                id: '2',
+                name: 'MDN Web Docs',
+                url: 'https://developer.mozilla.org',
+                icon: 'https://developer.mozilla.org/favicon.ico'
+            },
+            {
+                id: '3',
+                name: 'Tailwind CSS',
+                url: 'https://tailwindcss.com',
+                icon: 'https://tailwindcss.com/favicon.ico'
+            },
+            {
+                id: '4',
+                name: 'Vue.js',
+                url: 'https://vuejs.org',
+                icon: 'https://vuejs.org/favicon.ico'
+            }
+        ];
 
         // 初始化搜索引擎下拉菜单
         engineOptionBtns.forEach(btn => {
@@ -447,18 +813,14 @@
         function setCurrentEngine(engine) {
             currentEngine = engine;
             const engineData = searchEngines[engine];
-
-            // 更新下拉菜单按钮 - 只显示图标
             currentEngineBtn.innerHTML = `
                 <span class="engine-icon ${engineData.iconClass}"></span>
                 <i class="fa fa-chevron-down ml-1 text-xs"></i>
             `;
-
-            // 更新搜索图标
             updateSearchIcon();
         }
 
-        // 更新搜索图标颜色
+        // 更新搜索图标
         function updateSearchIcon() {
             const engine = searchEngines[currentEngine];
             searchIcon.className = `fa ${engine.icon || 'fa-search'} text-gray-400 text-lg`;
@@ -469,17 +831,14 @@
             e.preventDefault();
             const query = searchInput.value.trim();
             if (query) {
-                const engine = searchEngines[currentEngine];
-                // 为必应添加语言参数，确保使用中文界面
-                let searchUrl = engine.url;
-                if (engine === searchEngines.bing) {
+                let searchUrl = searchEngines[currentEngine].url;
+                if (currentEngine === 'bing') {
                     searchUrl += '?setmkt=zh-CN&setlang=zh-CN';
-                    searchUrl += `&${engine.param}=${encodeURIComponent(query)}`;
-                } else if (engine === searchEngines.mitata) {
-                    // 修复秘塔AI的搜索URL，使用正确的参数名和URL格式
+                    searchUrl += `&q=${encodeURIComponent(query)}`;
+                } else if (currentEngine === 'mitata') {
                     searchUrl = `https://metaso.cn/?q=${encodeURIComponent(query)}`;
                 } else {
-                    searchUrl += `?${engine.param}=${encodeURIComponent(query)}`;
+                    searchUrl += `?${searchEngines[currentEngine].param}=${encodeURIComponent(query)}`;
                 }
                 window.location.href = searchUrl;
             }
@@ -494,23 +853,19 @@
             }
 
             try {
-                // 根据当前搜索引擎获取建议
                 let suggestionsData = [];
                 if (currentEngine === 'baidu') {
                     const response = await fetch(`https://suggestion.baidu.com/su?wd=${encodeURIComponent(query)}&cb=JSON_CALLBACK`, {
                         mode: 'cors',
                         headers: {
-                            'Content-Type': 'application/json',
                             'Referer': 'https://www.baidu.com'
                         }
                     });
                     const text = await response.text();
-                    // 解析JSONP格式
                     const jsonpRegex = /JSON_CALLBACK\((.*)\)/;
                     const matches = text.match(jsonpRegex);
                     if (matches && matches[1]) {
-                        const data = JSON.parse(matches[1]);
-                        suggestionsData = data.s || [];
+                        suggestionsData = JSON.parse(matches[1]).s || [];
                     }
                 } else if (currentEngine === 'bing') {
                     const response = await fetch(`https://api.bing.com/osjson.aspx?query=${encodeURIComponent(query)}`);
@@ -520,18 +875,13 @@
                     const response = await fetch(`https://www.google.com/complete/search?client=chrome&q=${encodeURIComponent(query)}`);
                     const text = await response.text();
                     try {
-                        const data = JSON.parse(text);
-                        suggestionsData = data[1] || [];
-                    } catch (e) {
-                        console.error('Failed to parse Google suggestions', e);
-                    }
+                        suggestionsData = JSON.parse(text)[1] || [];
+                    } catch (e) {}
                 } else if (currentEngine === 'mitata') {
-                    // 为秘塔AI添加搜索建议功能 - 使用百度的建议作为备选
                     try {
                         const response = await fetch(`https://suggestion.baidu.com/su?wd=${encodeURIComponent(query)}&cb=JSON_CALLBACK`, {
                             mode: 'cors',
                             headers: {
-                                'Content-Type': 'application/json',
                                 'Referer': 'https://www.baidu.com'
                             }
                         });
@@ -539,17 +889,10 @@
                         const jsonpRegex = /JSON_CALLBACK\((.*)\)/;
                         const matches = text.match(jsonpRegex);
                         if (matches && matches[1]) {
-                            const data = JSON.parse(matches[1]);
-                            suggestionsData = data.s || [];
+                            suggestionsData = JSON.parse(matches[1]).s || [];
                         }
-                    } catch (error) {
-                        console.error('Failed to get suggestions for Mitata:', error);
-                        // 如果获取建议失败，使用空数组
-                        suggestionsData = [];
-                    }
+                    } catch (error) {}
                 }
-
-                // 显示建议
                 displaySuggestions(suggestionsData);
             } catch (error) {
                 console.error('Error fetching suggestions:', error);
@@ -566,7 +909,7 @@
 
         // 显示搜索建议
         function displaySuggestions(suggestionsData) {
-            if (!suggestionsData.length) {
+            if (suggestionsData.length === 0) {
                 suggestions.classList.add('hidden');
                 return;
             }
@@ -574,51 +917,179 @@
             suggestionsList.innerHTML = '';
             suggestionsData.forEach(suggestion => {
                 const li = document.createElement('li');
-                li.className = 'px-4 py-3 suggestion-item cursor-pointer';
+                li.className = 'suggestion-item px-4 py-2 hover:bg-white/10 cursor-pointer';
                 li.textContent = suggestion;
                 li.addEventListener('click', () => {
                     searchInput.value = suggestion;
-                    suggestions.classList.add('hidden');
                     searchForm.dispatchEvent(new Event('submit'));
                 });
                 suggestionsList.appendChild(li);
             });
-
             suggestions.classList.remove('hidden');
         }
 
-        // 防抖函数
-        function debounce(func, wait) {
-            let timeout;
-            return function () {
-                const context = this;
-                const args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(context, args), wait);
-            };
+        // 键盘导航建议列表
+        let currentSuggestionIndex = -1;
+        searchInput.addEventListener('keydown', (e) => {
+            const suggestionItems = suggestionsList.querySelectorAll('li');
+            if (suggestionItems.length === 0) return;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentSuggestionIndex = (currentSuggestionIndex + 1) % suggestionItems.length;
+                highlightSuggestion();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentSuggestionIndex = (currentSuggestionIndex - 1 + suggestionItems.length) % suggestionItems.length;
+                highlightSuggestion();
+            } else if (e.key === 'Enter' && currentSuggestionIndex !== -1) {
+                e.preventDefault();
+                searchInput.value = suggestionItems[currentSuggestionIndex].textContent;
+                searchForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // 高亮选中的建议
+        function highlightSuggestion() {
+            const suggestionItems = suggestionsList.querySelectorAll('li');
+            suggestionItems.forEach((item, index) => {
+                item.classList.toggle('bg-white/10', index === currentSuggestionIndex);
+            });
         }
+
+        // 黑暗模式切换
+        darkModeToggle.addEventListener('change', () => {
+            body.classList.toggle('dark-mode');
+            updateBackgroundImage();
+        });
+
+        // 更新背景图片
+        function updateBackgroundImage() {
+            if (body.classList.contains('dark-mode')) {
+                bgImage.style.backgroundImage = 'url("beijingtu.png")';
+            } else {
+                bgImage.style.backgroundImage = 'url("beijingtu1.png")';
+            }
+        }
+
+        // 渲染书签
+        function renderBookmarks() {
+            bookmarkGrid.innerHTML = '';
+            bookmarks.forEach(bookmark => {
+                const bookmarkEl = document.createElement('div');
+                bookmarkEl.className = 'bookmark-circle';
+                bookmarkEl.setAttribute('data-id', bookmark.id);
+                
+                let iconContent = '';
+                if (bookmark.icon) {
+                    iconContent = `<div class="bookmark-icon" style="background-image: url('${bookmark.icon}')"></div>`;
+                } else {
+                    const firstChar = bookmark.name.charAt(0).toUpperCase();
+                    iconContent = `<div class="bookmark-icon"><span class="bookmark-letter">${firstChar}</span></div>`;
+                }
+                
+                bookmarkEl.innerHTML = `
+                    <div class="bookmark-icon-container">
+                        ${iconContent}
+                    </div>
+                    <div class="bookmark-title">${bookmark.name}</div>
+                    <div class="bookmark-actions">
+                        <button class="delete-bookmark" title="删除">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                
+                bookmarkEl.addEventListener('click', (e) => {
+                    if (e.target.closest('.delete-bookmark')) return;
+                    window.open(bookmark.url, '_blank');
+                });
+                
+                bookmarkEl.querySelector('.delete-bookmark').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteBookmark(bookmark.id);
+                });
+                
+                bookmarkGrid.appendChild(bookmarkEl);
+            });
+            
+            const addBookmarkEl = document.createElement('div');
+            addBookmarkEl.className = 'bookmark-circle';
+            addBookmarkEl.innerHTML = `
+                <div class="add-bookmark-circle">
+                    <div class="add-icon">
+                        <i class="fa fa-plus text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="bookmark-title text-gray-400">添加</div>
+            `;
+            
+            addBookmarkEl.addEventListener('click', openAddBookmarkModal);
+            bookmarkGrid.appendChild(addBookmarkEl);
+        }
+
+        // 删除书签
+        function deleteBookmark(id) {
+            bookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            renderBookmarks();
+        }
+
+        // 打开添加书签模态框
+        function openAddBookmarkModal() {
+            addBookmarkModal.classList.add('active');
+            bookmarkNameInput.focus();
+        }
+
+        // 关闭添加书签模态框
+        function closeAddBookmarkModal() {
+            addBookmarkModal.classList.remove('active');
+            bookmarkForm.reset();
+        }
+
+        // 事件绑定
+        addBookmarkBtn.addEventListener('click', openAddBookmarkModal);
+        closeModalBtn.addEventListener('click', closeAddBookmarkModal);
+        cancelAddBookmarkBtn.addEventListener('click', closeAddBookmarkModal);
+        addBookmarkModal.addEventListener('click', (e) => {
+            if (e.target === addBookmarkModal) closeAddBookmarkModal();
+        });
+
+        // 表单提交
+        bookmarkForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = bookmarkNameInput.value.trim();
+            const url = bookmarkUrlInput.value.trim();
+            const icon = bookmarkIconInput.value.trim() || null;
+            
+            if (!name || !url) return;
+            
+            const newBookmark = {
+                id: Date.now().toString(),
+                name,
+                url,
+                icon
+            };
+            
+            bookmarks.push(newBookmark);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            closeAddBookmarkModal();
+            renderBookmarks();
+        });
 
         // 初始化
-        updateSearchIcon();
-
-        // 检查用户偏好的颜色模式
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            darkModeToggle.checked = true;
-            body.classList.add('dark-mode');
-        }
-
-        // 黑暗模式切换逻辑
-        darkModeToggle.addEventListener('change', function () {
-            if (this.checked) {
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化黑暗模式状态
+            darkModeToggle.checked = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (darkModeToggle.checked) {
                 body.classList.add('dark-mode');
-                document.querySelector('.bg-image-overlay').style.backgroundColor = 'rgba(30, 41, 59, 0.2)';
-            } else {
-                body.classList.remove('dark-mode');
-                document.querySelector('.bg-image-overlay').style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
             }
+            updateBackgroundImage();
+            
+            setCurrentEngine(currentEngine);
+            renderBookmarks();
         });
     </script>
 </body>
 
 </html>
-    
