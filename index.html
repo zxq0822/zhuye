@@ -477,7 +477,7 @@
                     searchUrl += `&${engine.param}=${encodeURIComponent(query)}`;
                 } else if (engine === searchEngines.mitata) {
                     // 修复秘塔AI的搜索URL，使用正确的参数名和URL格式
-                    searchUrl = `https://metaso.cn/search/8621505559015526400?q=${encodeURIComponent(query)}`;
+                    searchUrl = `https://metaso.cn/?q=${encodeURIComponent(query)}`;
                 } else {
                     searchUrl += `?${engine.param}=${encodeURIComponent(query)}`;
                 }
